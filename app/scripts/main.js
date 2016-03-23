@@ -8,16 +8,17 @@ var parseRSS = function(url, container) {
         dataType: 'json',
         success: function(data) {
             //console.log(data.responseData.feed);
-            $(container).html('<div class="panel panel-default"><h2>' + data.responseData.feed.title + '</h2><p>' + data.responseData.feed.description + '</p></div>');
+            $(container).html('<div class="row"><div class="col-sm-12"><div class="panel panel-default"><h2>' + data.responseData.feed.title + '</h2><p>' + data.responseData.feed.description + '</p></div></div></div>');
 
             $.each(data.responseData.feed.entries, function(key, val) {
                 if (key === 0) {
-                    var that = '<h3><a href="' + val.link + '" target="_blank">' + val.title + '</a></h3><p>' + val.contentSnippet + '</p>';
-                    $(container).append(that);
+                    var that = '<div class="col-sm-7 pull-left"><h3><a href="' + val.link + '" target="_blank">' + val.title + '</a></h3><p>' + val.contentSnippet + '</p></div>';
+                    $(container).prepend(that);
+                    $(container).prepend('<div class="col-sm-5 pull-right"><ul class="article-list">');
 
                 } else {
                     that = '<div class="list-group-item"><a href="' + val.link + '" target="_blank">' + val.title + '</a></div>';
-                    $(container).append(that);
+                    $('.article-list', container).append(that);
                 }
             });
         }
@@ -27,7 +28,7 @@ var parseRSS = function(url, container) {
 $(document).ready(function() {
 
     // Carousel
-    $('.carousel-thumb-nav > li > a').click(function() {
+    $('.carousel-thumb-nav > li > a').on('click', function() {
 
         var item = Number($(this).attr('href').substring(1));
 

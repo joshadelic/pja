@@ -35,14 +35,6 @@ module.exports = function (grunt) {
       bower: {
         files: ['bower.json']
       },
-      babel: {
-        files: ['<%= config.app %>/scripts/{,*/}*.js'],
-        tasks: ['babel:dist']
-      },
-      babelTest: {
-        files: ['test/spec/{,*/}*.js'],
-        tasks: ['babel:test', 'test:watch']
-      },
       gruntfile: {
         files: ['Gruntfile.js']
       },
@@ -78,20 +70,6 @@ module.exports = function (grunt) {
           }
         }
       },
-      test: {
-        options: {
-          port: 9001,
-          open: false,
-          logLevel: 'silent',
-          host: 'localhost',
-          server: {
-            baseDir: ['.tmp', './test', config.app],
-            routes: {
-              '/bower_components': './bower_components'
-            }
-          }
-        }
-      },
       dist: {
         options: {
           background: false,
@@ -113,51 +91,6 @@ module.exports = function (grunt) {
         }]
       },
       server: '.tmp'
-    },
-
-    // Make sure code styles are up to par and there are no obvious mistakes
-    //eslint: {
-    //  target: [
-    //    'Gruntfile.js',
-    //    '<%= config.app %>/scripts/{,*/}*.js',
-    //    '!<%= config.app %>/scripts/vendor/*',
-    //    'test/spec/{,*/}*.js'
-    //  ]
-    //},
-
-    // Mocha testing framework configuration options
-    mocha: {
-      all: {
-        options: {
-          run: true,
-          urls: ['http://<%= browserSync.test.options.host %>:<%= browserSync.test.options.port %>/index.html']
-        }
-      }
-    },
-
-    // Compiles ES6 with Babel
-    babel: {
-      options: {
-          sourceMap: true
-      },
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= config.app %>/scripts',
-          src: '{,*/}*.js',
-          dest: '.tmp/scripts',
-          ext: '.js'
-        }]
-      },
-      test: {
-        files: [{
-          expand: true,
-          cwd: 'test/spec',
-          src: '{,*/}*.js',
-          dest: '.tmp/spec',
-          ext: '.js'
-        }]
-      }
     },
 
     // Compiles Sass to CSS and generates necessary files if requested
@@ -208,19 +141,6 @@ module.exports = function (grunt) {
       }
     },
 
-    // Automatically inject Bower components into the HTML file
-    //wiredep: {
-    //  app: {
-    //    src: ['<%= config.app %>/index.html'],
-    //    exclude: ['bootstrap.js'],
-    //    ignorePath: /^(\.\.\/)*\.\./
-    //  },
-    //  sass: {
-    //    src: ['<%= config.app %>/styles/{,*/}*.{scss,sass}'],
-    //    ignorePath: /^(\.\.\/)+/
-    //  }
-    //},
-
     // Renames files for browser caching purposes
     filerev: {
       dist: {
@@ -257,18 +177,6 @@ module.exports = function (grunt) {
       css: ['<%= config.dist %>/styles/{,*/}*.css']
     },
 
-    // The following *-min tasks produce minified files in the dist folder
-    //imagemin: {
-    //  dist: {
-    //    files: [{
-    //      expand: true,
-    //      cwd: '<%= config.app %>/images',
-    //      src: '{,*/}*.{gif,jpeg,jpg,png}',
-    //      dest: '<%= config.dist %>/images'
-    //    }]
-    //  }
-    //},
-
     svgmin: {
       dist: {
         files: [{
@@ -302,32 +210,6 @@ module.exports = function (grunt) {
         }]
       }
     },
-
-    // By default, your `index.html`'s <!-- Usemin block --> will take care
-    // of minification. These next options are pre-configured if you do not
-    // wish to use the Usemin blocks.
-    // cssmin: {
-    //   dist: {
-    //     files: {
-    //       '<%= config.dist %>/styles/main.css': [
-    //         '.tmp/styles/{,*/}*.css',
-    //         '<%= config.app %>/styles/{,*/}*.css'
-    //       ]
-    //     }
-    //   }
-    // },
-    // uglify: {
-    //   dist: {
-    //     files: {
-    //       '<%= config.dist %>/scripts/scripts.js': [
-    //         '<%= config.dist %>/scripts/scripts.js'
-    //       ]
-    //     }
-    //   }
-    // },
-    // concat: {
-    //   dist: {}
-    // },
 
     // Copies remaining files to places other tasks can use
     copy: {
@@ -373,14 +255,9 @@ module.exports = function (grunt) {
     // Run some tasks in parallel to speed up build process
     concurrent: {
       server: [
-        'babel:dist',
         'sass:server'
       ],
-      test: [
-        'babel'
-      ],
       dist: [
-        'babel',
         'sass',
         'svgmin'
       ]
@@ -408,21 +285,6 @@ module.exports = function (grunt) {
     grunt.task.run([target ? ('serve:' + target) : 'serve']);
   });
 
-  grunt.registerTask('test', function (target) {
-    if (target !== 'watch') {
-      grunt.task.run([
-        'clean:server',
-        'concurrent:test',
-        'postcss'
-      ]);
-    }
-
-    grunt.task.run([
-      'browserSync:test',
-      'mocha'
-    ]);
-  });
-
   grunt.registerTask('build', [
     'clean:dist',
     'useminPrepare',
@@ -439,7 +301,6 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'test',
-    'build'
+    'server'
   ]);
 };

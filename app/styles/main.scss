@@ -24,8 +24,18 @@ $icon-font-path: "../bower_components/bootstrap-sass/assets/fonts/bootstrap/";
   }
 }
 
+.jumbotron {
+  padding: 20px;
+}
+
 .panel {
+  margin-bottom: 0;
   padding: 10px 20px;
+}
+
+.article-list {
+  margin-bottom: 20px;
+  padding: 0;
 }
 
 .carousel {
